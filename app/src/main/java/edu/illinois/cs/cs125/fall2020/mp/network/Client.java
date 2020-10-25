@@ -62,6 +62,7 @@ public final class Client {
             url,
             response -> {
               try {
+                Log.d(TAG, "Received server response");
                 Summary[] courses = objectMapper.readValue(response, Summary[].class);
                 callbacks.summaryResponse(year, semester, courses);
               } catch (JsonProcessingException e) {

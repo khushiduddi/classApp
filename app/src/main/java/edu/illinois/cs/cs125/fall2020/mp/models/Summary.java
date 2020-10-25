@@ -1,5 +1,7 @@
 package edu.illinois.cs.cs125.fall2020.mp.models;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.github.wrdlbrnft.sortedlistadapter.SortedListAdapter;
@@ -7,6 +9,7 @@ import com.github.wrdlbrnft.sortedlistadapter.SortedListAdapter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.ArrayList;
 
 /**
  * Model holding the course summary information shown in the course list.
@@ -136,11 +139,44 @@ public class Summary implements SortedListAdapter.ViewModel {
     return equals(model);
   }
 
-  public static final Comparator<Summary> COMPARATOR =
-      (courseModel1, courseModel2) -> 0;
+  @SuppressWarnings("checkstyle:EmptyBlock")
+  public static final Comparator<Summary> COMPARATOR = (courseModel1, courseModel2) -> {
+    if (courseModel1.department.compareTo(courseModel2.department) > 0) {
+      return 1;
+    } else if (courseModel1.department.compareTo(courseModel2.department) < 0) {
+      return -1;
+    } else if (courseModel1.department.compareTo(courseModel2.department) == 0) {
+      if (courseModel1.number.compareTo(courseModel2.number) > 0) {
+        return 1;
+      } else if (courseModel1.number.compareTo(courseModel2.number) < 0) {
+        return -1;
+      } else if (courseModel1.number.compareTo(courseModel2.number) == 0) {
+        if (courseModel1.title.compareTo(courseModel2.title) > 0) {
+          return 1;
+        } else if (courseModel1.title.compareTo(courseModel2.title) < 0) {
+          return -1;
+        } else {
+          return 0;
+        }
+      }
+    }
+    return 0;
+    //return Integer.compare(courseModel1.number.compareTo(courseModel2.number), 0);
+  };
 
   public static List<Summary> filter(
       @NonNull final List<Summary> courses, @NonNull final String text) {
-    return courses;
+    String t = text.toLowerCase();
+    List<Summary> filtered = new ArrayList<>();
+    for (int i = 0; i < courses.size(); i++) {
+      if (courses.get(i).department.toLowerCase().contains(t)) {
+        filtered.add(courses.get(i));
+      } else if (courses.get(i).number.toLowerCase().contains(t)) {
+        filtered.add(courses.get(i));
+      } else if (courses.get(i).title.toLowerCase().contains(t)) {
+        filtered.add(courses.get(i));
+      }
+    }
+    return filtered;
   }
 }
