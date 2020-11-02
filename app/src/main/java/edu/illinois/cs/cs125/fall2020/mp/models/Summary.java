@@ -1,6 +1,6 @@
 package edu.illinois.cs.cs125.fall2020.mp.models;
 
-import android.util.Log;
+//import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -60,6 +60,12 @@ public class Summary implements SortedListAdapter.ViewModel {
   public final String getNumber() {
     return number;
   }
+/*
+testSummaryView
+ */
+  public final String getInfo() {
+    return department + " " + number + ": " + title;
+  }
 
   private String title;
 
@@ -75,7 +81,7 @@ public class Summary implements SortedListAdapter.ViewModel {
   /**
    * Create an empty Summary.
    */
-  @SuppressWarnings({"unused", "RedundantSuppression"})
+  //@SuppressWarnings({"unused", "RedundantSuppression"})
   public Summary() {}
 
   /**
