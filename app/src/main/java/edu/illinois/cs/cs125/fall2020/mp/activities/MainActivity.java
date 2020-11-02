@@ -13,8 +13,11 @@ import edu.illinois.cs.cs125.fall2020.mp.application.CourseableApplication;
 import edu.illinois.cs.cs125.fall2020.mp.databinding.ActivityMainBinding;
 import edu.illinois.cs.cs125.fall2020.mp.models.Summary;
 import edu.illinois.cs.cs125.fall2020.mp.network.Client;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 
 /** Main activity showing the course summary list. */
 public final class MainActivity extends AppCompatActivity
@@ -130,6 +133,9 @@ public final class MainActivity extends AppCompatActivity
   @Override
   public boolean onQueryTextChange(final String query) {
     Log.d(TAG, "New search is " + query);
+    List<Summary> shownCourses = new ArrayList<>();
+    shownCourses = Summary.filter(courses, query);
+    listAdapter.edit().replaceAll(shownCourses).commit();
     return true;
   }
 

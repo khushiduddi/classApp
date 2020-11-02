@@ -60,8 +60,10 @@ public class Summary implements SortedListAdapter.ViewModel {
   public final String getNumber() {
     return number;
   }
-/*
-testSummaryView
+/**
+ * Gets the department, number, and title together for this Summary.
+ *
+ * @return the department, number and title in specific format
  */
   public final String getInfo() {
     return department + " " + number + ": " + title;
@@ -145,7 +147,12 @@ testSummaryView
     return equals(model);
   }
 
-  @SuppressWarnings("checkstyle:EmptyBlock")
+  /**
+   * Sorts courses by department, number, then title.
+   * @param courseModel1
+   * @param courseModel2
+   * @return int from comparing the Strings
+   */
   public static final Comparator<Summary> COMPARATOR = (courseModel1, courseModel2) -> {
     if (courseModel1.department.compareTo(courseModel2.department) > 0) {
       return 1;
@@ -170,16 +177,20 @@ testSummaryView
     //return Integer.compare(courseModel1.number.compareTo(courseModel2.number), 0);
   };
 
+  /**
+   * Filter the passed list of courses to include only those that contain passed String.
+   * @param courses
+   * @param text
+   * @return new filtered List
+   */
   public static List<Summary> filter(
       @NonNull final List<Summary> courses, @NonNull final String text) {
     String t = text.toLowerCase();
     List<Summary> filtered = new ArrayList<>();
     for (int i = 0; i < courses.size(); i++) {
-      if (courses.get(i).department.toLowerCase().contains(t)) {
-        filtered.add(courses.get(i));
-      } else if (courses.get(i).number.toLowerCase().contains(t)) {
-        filtered.add(courses.get(i));
-      } else if (courses.get(i).title.toLowerCase().contains(t)) {
+      String all = courses.get(i).department + " " + courses.get(i).number + ": " + courses.get(i).title;
+      all = all.toLowerCase();
+      if (all.contains(t)) {
         filtered.add(courses.get(i));
       }
     }
