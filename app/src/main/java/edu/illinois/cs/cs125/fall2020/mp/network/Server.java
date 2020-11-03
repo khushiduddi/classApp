@@ -51,6 +51,20 @@ public final class Server extends Dispatcher {
   @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
   private final Map<Summary, String> courses = new HashMap<>();
 
+  // course/2020/fall/CS/125
+  private MockResponse getCourse(@NonNull final String path) {
+    String[] parts = path.split("/");
+    if (parts.length != 2) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+    }
+
+    String course = courses.get(parts[0] + "_" + parts[1]);
+    if (course == null) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
+    }
+    return new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK).setBody(course);
+  }
+
   @NonNull
   @Override
   public MockResponse dispatch(@NonNull final RecordedRequest request) {

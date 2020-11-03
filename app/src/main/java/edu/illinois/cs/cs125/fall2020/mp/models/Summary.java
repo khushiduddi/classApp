@@ -60,14 +60,6 @@ public class Summary implements SortedListAdapter.ViewModel {
   public final String getNumber() {
     return number;
   }
-/**
- * Gets the department, number, and title together for this Summary.
- *
- * @return the department, number and title in specific format
- */
-  public final String getInfo() {
-    return department + " " + number + ": " + title;
-  }
 
   private String title;
 
@@ -79,6 +71,22 @@ public class Summary implements SortedListAdapter.ViewModel {
   public final String getTitle() {
     return title;
   }
+
+  /**
+   * Gets the department, number, and title together for this Summary.
+   *
+   * @return the department, number and title in specific format
+   */
+  public final String getInfo() {
+    return department + " " + number + ": " + title;
+  }
+
+  /**
+   * Get the URL request path for this Summary.
+   *
+   * @return the URL request path for this Summary
+   */
+  public final String getPath() { return year + "/" + semester + "/" + department + "/" + number; }
 
   /**
    * Create an empty Summary.
