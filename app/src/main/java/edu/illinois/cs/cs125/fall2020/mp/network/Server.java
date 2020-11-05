@@ -35,6 +35,7 @@ public final class Server extends Dispatcher {
 
   private final Map<String, String> summaries = new HashMap<>();
 
+  // summary/2020/fall
   private MockResponse getSummary(@NonNull final String path) {
     String[] parts = path.split("/");
     if (parts.length != 2) {
@@ -54,11 +55,11 @@ public final class Server extends Dispatcher {
   // course/2020/fall/CS/125
   private MockResponse getCourse(@NonNull final String path) {
     String[] parts = path.split("/");
-    if (parts.length != 2) {
+    if (parts.length != 4) {
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
     }
-
-    String course = courses.get(parts[0] + "_" + parts[1]);
+    Summary summary = new Summary(parts[0], parts[1], parts[2], parts[3]);
+    String course = courses.get(summary);
     if (course == null) {
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
     }
@@ -76,6 +77,8 @@ public final class Server extends Dispatcher {
         return new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK);
       } else if (path.startsWith("/summary/")) {
         return getSummary(path.replaceFirst("/summary/", ""));
+      } else if (path.startsWith("/course/")) {
+        return getCourse(path.replaceFirst("/course/", ""));
       }
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
     } catch (Exception e) {

@@ -95,6 +95,24 @@ public class Summary implements SortedListAdapter.ViewModel {
   public Summary() {}
 
   /**
+   * Create a Summary with all provided fields except title
+   * @param setYear
+   * @param setSemester
+   * @param setDepartment
+   * @param setNumber
+   */
+  public Summary(
+          final String setYear,
+          final String setSemester,
+          final String setDepartment,
+          final String setNumber) {
+    year = setYear;
+    semester = setSemester;
+    department = setDepartment;
+    number = setNumber;
+  }
+
+  /**
    * Create a Summary with the provided fields.
    *
    * @param setYear       the year for this Summary
