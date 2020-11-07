@@ -82,6 +82,23 @@ public final class Client {
           @NonNull final Summary summary,
           @NonNull final CourseClientCallbacks callbacks
   ) {
+    String url = CourseableApplication.SERVER_URL + "course/" + summary.getYear() + "/" +
+            summary.getSemester() + "/" + summary.getDepartment() + "/" + summary.getNumber();
+    StringRequest courseRequest =
+            new StringRequest(
+                    Request.Method.GET,
+                    url,
+                    response -> {
+                      try {
+                        Log.d(TAG, "Received server response");
+                        Course courses = objectMapper.readValue(response, Course.class);
+                        callbacks.courseResponse(summary, courses);
+                      } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                      }
+                    },
+                    error -> Log.e(TAG, error.toString()));
+    requestQueue.add(courseRequest);
 
   }
 
