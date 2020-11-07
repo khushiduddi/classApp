@@ -1,5 +1,6 @@
 package edu.illinois.cs.cs125.fall2020.mp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.SearchView;
@@ -148,6 +149,8 @@ public final class MainActivity extends AppCompatActivity
    */
   @Override
   public void onCourseClicked(final Summary course) {
-    Log.d(TAG, "What event does this correspond to?");
+    Intent startCourseActivity = new Intent(this, CourseActivity.class);
+    startCourseActivity.putExtra("TITLE", course.getTitle());
+    startActivity(startCourseActivity);
   }
 }
