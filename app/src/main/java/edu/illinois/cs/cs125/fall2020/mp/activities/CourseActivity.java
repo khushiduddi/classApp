@@ -7,13 +7,31 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
+import edu.illinois.cs.cs125.fall2020.mp.R;
+import edu.illinois.cs.cs125.fall2020.mp.application.CourseableApplication;
+import edu.illinois.cs.cs125.fall2020.mp.databinding.ActivityCourseBinding;
+import edu.illinois.cs.cs125.fall2020.mp.models.Course;
+import edu.illinois.cs.cs125.fall2020.mp.models.Summary;
+import edu.illinois.cs.cs125.fall2020.mp.network.Client;
 
 /**
  * Create new class Course Activity.
  *
  */
-public class CourseActivity extends AppCompatActivity {
+public class CourseActivity extends AppCompatActivity implements Client.CourseClientCallbacks {
     private static final String TAG = CourseActivity.class.getSimpleName();
+    // Binding to the layout in activity_main.xml
+    private ActivityCourseBinding binding;
+
+    private String newDescription;
+    private String title;
 
     /**
      * Creates new action for CourseActivity.
@@ -25,6 +43,24 @@ public class CourseActivity extends AppCompatActivity {
         Log.i(TAG, "Course Activity Started");
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        Log.d(TAG, intent.getStringExtra("TITLE"));
+        String description = intent.getStringExtra("COURSE");
+        ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        try {
+            Summary courses = mapper.readValue(description, Summary.class);
+            CourseableApplication application = (CourseableApplication) getApplication();
+            application.getCourseClient().getCourse(courses, this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        // Bind to the layout in activity_main.xml
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_course);
+        binding.title1.setText(title);
+        binding.description.setText(newDescription);
+    }
+    @Override
+    public void courseResponse(
+            final Summary summary, final Course course) {
+        newDescription = course.getDescription();
+        title = course.getTitle();
     }
 }

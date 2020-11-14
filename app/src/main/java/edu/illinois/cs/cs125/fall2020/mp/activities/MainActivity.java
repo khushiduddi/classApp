@@ -7,6 +7,8 @@ import android.widget.SearchView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.wrdlbrnft.sortedlistadapter.SortedListAdapter;
 import edu.illinois.cs.cs125.fall2020.mp.R;
 import edu.illinois.cs.cs125.fall2020.mp.adapters.CourseListAdapter;
@@ -14,11 +16,9 @@ import edu.illinois.cs.cs125.fall2020.mp.application.CourseableApplication;
 import edu.illinois.cs.cs125.fall2020.mp.databinding.ActivityMainBinding;
 import edu.illinois.cs.cs125.fall2020.mp.models.Summary;
 import edu.illinois.cs.cs125.fall2020.mp.network.Client;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 
 /** Main activity showing the course summary list. */
 public final class MainActivity extends AppCompatActivity
@@ -54,7 +54,6 @@ public final class MainActivity extends AppCompatActivity
   protected void onCreate(final Bundle unused) {
     super.onCreate(unused);
     Log.i("Startup", "onCreate in MainActivity");
-
 
     // Bind to the layout in activity_main.xml
     binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
@@ -150,7 +149,13 @@ public final class MainActivity extends AppCompatActivity
   @Override
   public void onCourseClicked(final Summary course) {
     Intent startCourseActivity = new Intent(this, CourseActivity.class);
-    startCourseActivity.putExtra("TITLE", course.getTitle());
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      String newCourses = mapper.writeValueAsString(course);
+      startCourseActivity.putExtra("COURSE", newCourses);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
     startActivity(startCourseActivity);
   }
 }

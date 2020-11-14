@@ -1,15 +1,13 @@
 package edu.illinois.cs.cs125.fall2020.mp.models;
 
-//import android.util.Log;
+// import android.util.Log;
 
 import androidx.annotation.NonNull;
-
 import com.github.wrdlbrnft.sortedlistadapter.SortedListAdapter;
-
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.ArrayList;
 
 /**
  * Model holding the course summary information shown in the course list.
@@ -86,26 +84,27 @@ public class Summary implements SortedListAdapter.ViewModel {
    *
    * @return the URL request path for this Summary
    */
-  public final String getPath() { return year + "/" + semester + "/" + department + "/" + number; }
+  public final String getPath() {
+    return year + "/" + semester + "/" + department + "/" + number;
+  }
 
-  /**
-   * Create an empty Summary.
-   */
-  //@SuppressWarnings({"unused", "RedundantSuppression"})
+  /** Create an empty Summary. */
+  // @SuppressWarnings({"unused", "RedundantSuppression"})
   public Summary() {}
 
   /**
-   * Create a Summary with all provided fields except title
+   * Create a Summary with all provided fields except title.
+   *
    * @param setYear
    * @param setSemester
    * @param setDepartment
    * @param setNumber
    */
   public Summary(
-          final String setYear,
-          final String setSemester,
-          final String setDepartment,
-          final String setNumber) {
+      final String setYear,
+      final String setSemester,
+      final String setDepartment,
+      final String setNumber) {
     year = setYear;
     semester = setSemester;
     department = setDepartment;
@@ -115,11 +114,11 @@ public class Summary implements SortedListAdapter.ViewModel {
   /**
    * Create a Summary with the provided fields.
    *
-   * @param setYear       the year for this Summary
-   * @param setSemester   the semester for this Summary
+   * @param setYear the year for this Summary
+   * @param setSemester the semester for this Summary
    * @param setDepartment the department for this Summary
-   * @param setNumber     the number for this Summary
-   * @param setTitle      the title for this Summary
+   * @param setNumber the number for this Summary
+   * @param setTitle the title for this Summary
    */
   public Summary(
       final String setYear,
@@ -134,9 +133,7 @@ public class Summary implements SortedListAdapter.ViewModel {
     title = setTitle;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean equals(final Object o) {
     if (!(o instanceof Summary)) {
@@ -149,25 +146,19 @@ public class Summary implements SortedListAdapter.ViewModel {
         && Objects.equals(number, course.number);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int hashCode() {
     return Objects.hash(year, semester, department, number);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public <T> boolean isSameModelAs(@NonNull final T model) {
     return equals(model);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public <T> boolean isContentTheSameAs(@NonNull final T model) {
     return equals(model);
@@ -175,36 +166,39 @@ public class Summary implements SortedListAdapter.ViewModel {
 
   /**
    * Sorts courses by department, number, then title.
+   *
    * @param courseModel1
    * @param courseModel2
    * @return int from comparing the Strings
    */
-  public static final Comparator<Summary> COMPARATOR = (courseModel1, courseModel2) -> {
-    if (courseModel1.department.compareTo(courseModel2.department) > 0) {
-      return 1;
-    } else if (courseModel1.department.compareTo(courseModel2.department) < 0) {
-      return -1;
-    } else if (courseModel1.department.compareTo(courseModel2.department) == 0) {
-      if (courseModel1.number.compareTo(courseModel2.number) > 0) {
-        return 1;
-      } else if (courseModel1.number.compareTo(courseModel2.number) < 0) {
-        return -1;
-      } else if (courseModel1.number.compareTo(courseModel2.number) == 0) {
-        if (courseModel1.title.compareTo(courseModel2.title) > 0) {
+  public static final Comparator<Summary> COMPARATOR =
+      (courseModel1, courseModel2) -> {
+        if (courseModel1.department.compareTo(courseModel2.department) > 0) {
           return 1;
-        } else if (courseModel1.title.compareTo(courseModel2.title) < 0) {
+        } else if (courseModel1.department.compareTo(courseModel2.department) < 0) {
           return -1;
-        } else {
-          return 0;
+        } else if (courseModel1.department.compareTo(courseModel2.department) == 0) {
+          if (courseModel1.number.compareTo(courseModel2.number) > 0) {
+            return 1;
+          } else if (courseModel1.number.compareTo(courseModel2.number) < 0) {
+            return -1;
+          } else if (courseModel1.number.compareTo(courseModel2.number) == 0) {
+            if (courseModel1.title.compareTo(courseModel2.title) > 0) {
+              return 1;
+            } else if (courseModel1.title.compareTo(courseModel2.title) < 0) {
+              return -1;
+            } else {
+              return 0;
+            }
+          }
         }
-      }
-    }
-    return 0;
-    //return Integer.compare(courseModel1.number.compareTo(courseModel2.number), 0);
-  };
+        return 0;
+        // return Integer.compare(courseModel1.number.compareTo(courseModel2.number), 0);
+      };
 
   /**
    * Filter the passed list of courses to include only those that contain passed String.
+   *
    * @param courses
    * @param text
    * @return new filtered List
@@ -214,7 +208,8 @@ public class Summary implements SortedListAdapter.ViewModel {
     String t = text.toLowerCase();
     List<Summary> filtered = new ArrayList<>();
     for (int i = 0; i < courses.size(); i++) {
-      String all = courses.get(i).department + " " + courses.get(i).number + ": " + courses.get(i).title;
+      String all =
+          courses.get(i).department + " " + courses.get(i).number + ": " + courses.get(i).title;
       all = all.toLowerCase();
       if (all.contains(t)) {
         filtered.add(courses.get(i));

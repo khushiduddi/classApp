@@ -46,6 +46,12 @@ public final class Client {
      */
     default void summaryResponse(String year, String semester, Summary[] summaries) {}
 
+    /**
+     * Return the courses for given summary and course.
+     *
+     * @param summary summary was retrieved
+     * @param course course was retrieved
+     */
     default void courseResponse(Summary summary, Course course) {}
   }
 
@@ -79,29 +85,33 @@ public final class Client {
   }
 
   public void getCourse(
-          @NonNull final Summary summary,
-          @NonNull final CourseClientCallbacks callbacks
-  ) {
-    String url = CourseableApplication.SERVER_URL + "course/" + summary.getYear() + "/" +
-            summary.getSemester() + "/" + summary.getDepartment() + "/" + summary.getNumber();
+      @NonNull final Summary summary, @NonNull final CourseClientCallbacks callbacks) {
+    String url =
+        CourseableApplication.SERVER_URL
+            + "course/"
+            + summary.getYear()
+            + "/"
+            + summary.getSemester()
+            + "/"
+            + summary.getDepartment()
+            + "/"
+            + summary.getNumber();
     StringRequest courseRequest =
-            new StringRequest(
-                    Request.Method.GET,
-                    url,
-                    response -> {
-                      try {
-                        Log.d(TAG, "Received server response");
-                        Course courses = objectMapper.readValue(response, Course.class);
-                        callbacks.courseResponse(summary, courses);
-                      } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                      }
-                    },
-                    error -> Log.e(TAG, error.toString()));
+        new StringRequest(
+            Request.Method.GET,
+            url,
+            response -> {
+              try {
+                Log.d(TAG, "Received server response");
+                Course courses = objectMapper.readValue(response, Course.class);
+                callbacks.courseResponse(summary, courses);
+              } catch (JsonProcessingException e) {
+                e.printStackTrace();
+              }
+            },
+            error -> Log.e(TAG, error.toString()));
     requestQueue.add(courseRequest);
-
   }
-
 
   private static Client instance;
 
@@ -131,9 +141,12 @@ public final class Client {
     Cache cache = new NoCache();
     Network network = new BasicNetwork(new HurlStack());
     HttpURLConnection.setFollowRedirects(true);
-    requestQueue = new RequestQueue(
-            cache, network, THREAD_POOL_SIZE, new ExecutorDelivery(Executors.newSingleThreadExecutor())
-    );
+    requestQueue =
+        new RequestQueue(
+            cache,
+            network,
+            THREAD_POOL_SIZE,
+            new ExecutorDelivery(Executors.newSingleThreadExecutor()));
 
     // Configure the Jackson object mapper to ignore unknown properties
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
