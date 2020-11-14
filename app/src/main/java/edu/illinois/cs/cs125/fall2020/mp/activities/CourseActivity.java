@@ -26,41 +26,46 @@ import edu.illinois.cs.cs125.fall2020.mp.network.Client;
  *
  */
 public class CourseActivity extends AppCompatActivity implements Client.CourseClientCallbacks {
-    private static final String TAG = CourseActivity.class.getSimpleName();
-    // Binding to the layout in activity_main.xml
-    private ActivityCourseBinding binding;
+  private static final String TAG = CourseActivity.class.getSimpleName();
+  private ActivityCourseBinding binding;
+  private String newDescription;
+  private String title;
 
-    private String newDescription;
-    private String title;
+  /**
+   * Creates new action for CourseActivity.
+   *
+   * @param savedInstanceState retrieves savedInstanceState
+   */
+  @Override
+  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+    Log.i(TAG, "Course Activity Started");
+    super.onCreate(savedInstanceState);
+    Intent intent = getIntent();
+    String description = intent.getStringExtra("COURSE");
+    ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    try {
+      Summary courses = mapper.readValue(description, Summary.class);
+      CourseableApplication application = (CourseableApplication) getApplication();
+      application.getCourseClient().getCourse(courses, this);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+    // Bind to the layout in activity_main.xml
+    binding = DataBindingUtil.setContentView(this, R.layout.activity_course);
+    binding.title1.setText(title);
+    binding.description.setText(newDescription);
+  }
 
-    /**
-     * Creates new action for CourseActivity.
-     *
-     * @param savedInstanceState
-     */
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.i(TAG, "Course Activity Started");
-        super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        String description = intent.getStringExtra("COURSE");
-        ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        try {
-            Summary courses = mapper.readValue(description, Summary.class);
-            CourseableApplication application = (CourseableApplication) getApplication();
-            application.getCourseClient().getCourse(courses, this);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        // Bind to the layout in activity_main.xml
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_course);
-        binding.title1.setText(title);
-        binding.description.setText(newDescription);
-    }
-    @Override
-    public void courseResponse(
-            final Summary summary, final Course course) {
-        newDescription = course.getDescription();
-        title = course.getTitle();
-    }
+  /**
+   * Gets description and title of course.
+   *
+   * @param summary summary was retrieved
+   * @param course course was retrieved
+   */
+  @Override
+  public void courseResponse(
+      final Summary summary, final Course course) {
+    newDescription = course.getDescription();
+    title = course.getTitle();
+  }
 }
