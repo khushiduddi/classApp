@@ -55,7 +55,8 @@ public final class Server extends Dispatcher {
   // course/2020/fall/CS/125
   private MockResponse getCourse(@NonNull final String path) {
     String[] parts = path.split("/");
-    if (parts.length != 4) {
+    final int x = 4;
+    if (parts.length != x) {
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
     }
     Summary summary = new Summary(parts[0], parts[1], parts[2], parts[3]);
@@ -89,7 +90,7 @@ public final class Server extends Dispatcher {
   private static boolean started = false;
 
   /**
-   * Start the server if has not already been started.
+   * Start the server if has not already beennn started.
    *
    * <p>We start the server in a new thread so that it operates separately from and does not
    * interfere with the rest of the app.
