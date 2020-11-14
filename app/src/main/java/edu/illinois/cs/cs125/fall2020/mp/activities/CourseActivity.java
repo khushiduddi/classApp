@@ -57,7 +57,7 @@ public class CourseActivity extends AppCompatActivity implements Client.CourseCl
   }
 
   /**
-   * Gets description and title of a course.
+   * Method gets description and title of a course.
    *
    * @param summary summary was retrieved
    * @param course course was retrieved
