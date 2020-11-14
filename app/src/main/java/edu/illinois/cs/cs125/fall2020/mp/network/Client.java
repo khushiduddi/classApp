@@ -84,6 +84,13 @@ public final class Client {
     requestQueue.add(summaryRequest);
   }
 
+
+  /**
+   * Retrieve course for a given summary and callback.
+   *
+   * @param summary the summary to retrieve
+   * @param callbacks the callback that will receive the result
+   */
   public void getCourse(
       @NonNull final Summary summary, @NonNull final CourseClientCallbacks callbacks) {
     String url =
