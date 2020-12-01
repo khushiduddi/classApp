@@ -21,6 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.Executors;
+import edu.illinois.cs.cs125.fall2020.mp.models.Rating;
 
 /**
  * Course API client.
@@ -53,6 +54,8 @@ public final class Client {
      * @param course course was retrieved
      */
     default void courseResponse(Summary summary, Course course) {}
+
+    default void yourRating(Summary summary, Rating rating) { }
   }
 
   /**
@@ -118,6 +121,43 @@ public final class Client {
             },
             error -> Log.e(TAG, error.toString()));
     requestQueue.add(courseRequest);
+  }
+
+  public void getRating(
+      @NonNull final Summary summary, @NonNull final String clientId, @NonNull final CourseClientCallbacks callbacks
+  ) {
+    String url = CourseableApplication.SERVER_URL
+        + "rating/"
+        + summary.getYear()
+        + "/"
+        + summary.getSemester()
+        + "/"
+        + summary.getDepartment()
+        + "/"
+        + summary.getNumber()
+        + "?"
+        + "client="
+        + clientId;
+    StringRequest ratingRequest =
+        new StringRequest(
+            Request.Method.GET,
+            url,
+            response -> {
+              try {
+                Rating rating = objectMapper.readValue(response, Rating.class);
+                callbacks.yourRating(summary, rating);
+              } catch (JsonProcessingException e) {
+                e.printStackTrace();;
+              }
+            },
+            error -> Log.e(TAG, error.toString()));
+    requestQueue.add(ratingRequest);
+  }
+
+  public void postRating(
+      @NonNull final Summary summary, @NonNull final Rating rating, @NonNull final CourseClientCallbacks callbacks
+  ) {
+    throw new IllegalStateException("Not yet implemented");
   }
 
   private static Client instance;

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.illinois.cs.cs125.fall2020.mp.application.CourseableApplication;
+import edu.illinois.cs.cs125.fall2020.mp.models.Rating;
 import edu.illinois.cs.cs125.fall2020.mp.models.Summary;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -67,6 +68,87 @@ public final class Server extends Dispatcher {
     return new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK).setBody(course);
   }
 
+  private final Map<Summary, Map<String, Rating>> ratings = new HashMap<>();
+
+  private MockResponse getRating(@NonNull final String path) throws JsonProcessingException {
+    final int uuidLength = 36;
+    final int x = 4;
+    if (!(path.contains("?"))) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+    }
+    String[] pathParts = path.split("/");
+    if (pathParts.length != x) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+    }
+    String[] numAndUuid = pathParts[3].split("\\?client=");
+    Summary summary = new Summary();
+    String u = pathParts[0] + "/" + pathParts[1] + "/" + pathParts[2] + "/" + numAndUuid[0];
+    boolean flag = false;
+    for (Summary sum : courses.keySet()) {
+      if (u.equals(sum.getPath())) {
+        flag = true;
+        summary = sum;
+      }
+    }
+    Map<String, Rating> inner = ratings.getOrDefault(summary, new HashMap<>());
+    if (inner.get(numAndUuid[1]) == null) {
+      inner.put(numAndUuid[1], new Rating(numAndUuid[1], Rating.NOT_RATED));
+    }
+    ratings.put(summary, inner);
+    if (numAndUuid[1].length() != uuidLength) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+    } else if (!flag) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
+    }
+    Rating rating = ratings.get(summary).get(numAndUuid[1]);
+    return new MockResponse()
+        .setResponseCode(HttpURLConnection.HTTP_OK)
+        .setBody(mapper.writeValueAsString(rating));
+  }
+
+  private boolean isJsonValid(final String text) {
+    try {
+      final ObjectMapper newMapper = new ObjectMapper();
+      newMapper.readTree(text);
+      return true;
+    } catch (IOException e) {
+      return false;
+    }
+  }
+
+  public MockResponse postRating(@NonNull final String path, @NonNull final RecordedRequest request)
+    throws JsonProcessingException {
+    String s = request.getBody().readUtf8();
+    if (!(isJsonValid(s)) || (path.startsWith("/rating/")) || !(path.contains("?client"))) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+    } else {
+      Rating rating = mapper.readValue(s, Rating.class);
+      System.out.println(rating.getRating());
+
+      int pathX = path.indexOf("?");
+      String urlPath = path.substring(0, pathX);
+      Summary summ = new Summary();
+      for (Summary sum : courses.keySet()) {
+        if (sum.getPath().equals(urlPath)) {
+          summ = sum;
+        }
+      }
+      Map<String, Rating> m = new HashMap<>();
+      if (ratings.get(summ) == null) {
+        m.put(rating.getId(), rating);
+        ratings.put(summ, m);
+      } else {
+        m = ratings.get(summ);
+        m.put(rating.getId(), rating);
+        ratings.put(summ, m);
+      }
+      System.out.println(summ.getNumber());
+      return new MockResponse()
+          .setResponseCode(HttpURLConnection.HTTP_MOVED_TEMP)
+          .setHeader("Location", "");
+    }
+  }
+
   @NonNull
   @Override
   public MockResponse dispatch(@NonNull final RecordedRequest request) {
@@ -80,6 +162,10 @@ public final class Server extends Dispatcher {
         return getSummary(path.replaceFirst("/summary/", ""));
       } else if (path.startsWith("/course/")) {
         return getCourse(path.replaceFirst("/course/", ""));
+      } else if (path.startsWith("/rating/") && request.getMethod().equals("GET")) {
+        return getRating(path.replaceFirst("/rating/", ""));
+      } else if (path.startsWith("/rating/") && request.getMethod().equals("POST")) {
+        return postRating(path.replaceFirst("/rating/", ""), request);
       }
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
     } catch (Exception e) {
