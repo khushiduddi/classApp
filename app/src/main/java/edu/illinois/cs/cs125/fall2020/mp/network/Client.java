@@ -2,6 +2,8 @@ package edu.illinois.cs.cs125.fall2020.mp.network;
 
 import android.util.Log;
 import androidx.annotation.NonNull;
+
+import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
 import com.android.volley.ExecutorDelivery;
 import com.android.volley.Network;
@@ -157,7 +159,36 @@ public final class Client {
   public void postRating(
       @NonNull final Summary summary, @NonNull final Rating rating, @NonNull final CourseClientCallbacks callbacks
   ) {
-    throw new IllegalStateException("Not yet implemented");
+    String url =
+        CourseableApplication.SERVER_URL
+        + "rating/"
+        + summary.getYear()
+        + "/"
+        + summary.getSemester()
+        + "/"
+        + summary.getDepartment()
+        + "/"
+        + summary.getNumber()
+        + "?"
+        + "client="
+        + rating.getId();
+    StringRequest ratingRequest =
+        new StringRequest(
+            Request.Method.POST,
+            url,
+            response -> callbacks.yourRating(summary, rating),
+            error -> Log.e(TAG, error.toString())) {
+          @Override
+          public byte[] getBody() throws AuthFailureError {
+            try {
+              return objectMapper.writeValueAsString(rating).getBytes();
+            } catch (JsonProcessingException e) {
+              e.printStackTrace();
+            }
+            return "".getBytes();
+          }
+        };
+    requestQueue.add(ratingRequest);
   }
 
   private static Client instance;
