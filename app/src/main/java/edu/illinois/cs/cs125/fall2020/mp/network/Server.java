@@ -116,8 +116,15 @@ public final class Server extends Dispatcher {
     }
   }
 
+  /**
+   * Updates rating to server.
+   * @param path
+   * @param request
+   * @return MockResponse
+   * @throws JsonProcessingException
+   */
   public MockResponse postRating(@NonNull final String path, @NonNull final RecordedRequest request)
-    throws JsonProcessingException {
+      throws JsonProcessingException {
     String s = request.getBody().readUtf8();
     if (!(isJsonValid(s)) || (path.startsWith("/rating/")) || !(path.contains("?client"))) {
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
@@ -149,7 +156,11 @@ public final class Server extends Dispatcher {
     }
   }
 
-  @NonNull
+  /**
+   *  Calls the methods.
+   * @param request
+   * @return MockResponse the right one
+   */
   @Override
   public MockResponse dispatch(@NonNull final RecordedRequest request) {
     try {

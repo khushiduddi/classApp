@@ -139,10 +139,10 @@ public final class MP2Test {
       assertThat(response.code()).isEqualTo(HttpStatus.SC_OK);
 
       String[] randomIDs = {
-          UUID.randomUUID().toString(),
-          UUID.randomUUID().toString(),
-          UUID.randomUUID().toString(),
-          UUID.randomUUID().toString()
+        UUID.randomUUID().toString(),
+        UUID.randomUUID().toString(),
+        UUID.randomUUID().toString(),
+        UUID.randomUUID().toString()
       };
       for (String courseString : courses.subList(0, 8)) {
         for (String clientID : randomIDs) {
@@ -358,9 +358,9 @@ public final class MP2Test {
   }
 
   @SuppressWarnings({
-      "SameParameterValue",
-      "ConstantConditions",
-      "MismatchedQueryAndUpdateOfCollection"
+    "SameParameterValue",
+    "ConstantConditions",
+    "MismatchedQueryAndUpdateOfCollection"
   })
   @RunWith(AndroidJUnit4.class)
   @LooperMode(LooperMode.Mode.PAUSED)
@@ -509,7 +509,7 @@ public final class MP2Test {
         ObjectNode summaryForIntent = (ObjectNode) mapper.readTree(summaryString);
         summaryForIntent.remove("description");
         intent.putExtra("COURSE", summaryForIntent.toString());
-         ActivityScenario<CourseActivity> courseScenario = ActivityScenario.launch(intent);
+        ActivityScenario<CourseActivity> courseScenario = ActivityScenario.launch(intent);
         courseScenario.moveToState(Lifecycle.State.CREATED);
         courseScenario.moveToState(Lifecycle.State.RESUMED);
         Thread.sleep(100);
