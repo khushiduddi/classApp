@@ -130,7 +130,8 @@ public final class Client {
   }
 
   /**
-   *   Retrieves the rating.
+   * Retrieves the rating.
+   *
    * @param summary
    * @param clientId
    * @param callbacks
@@ -170,6 +171,7 @@ public final class Client {
 
   /**
    * Retieves post rating.
+   *
    * @param summary
    * @param rating
    * @param callbacks

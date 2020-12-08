@@ -81,6 +81,11 @@ public class CourseActivity extends AppCompatActivity
     binding.description.setText(course.getDescription());
   }
 
+  /**
+   * Retrieves your rating.
+   * @param sam
+   * @param r
+   */
   public void yourRating(final Summary sam, final Rating r) {
     this.sum = sam;
     binding.rating.setRating((float) r.getRating());
@@ -92,12 +97,13 @@ public class CourseActivity extends AppCompatActivity
    *  @param rating is the rating for the course
    *  @param fromUser is the input from the user
    */
+  @SuppressWarnings("checkstyle:Indentation")
   @Override
   public void onRatingChanged(
-      final RatingBar ratingBar, final float rating , final boolean fromUser) {
-  CourseableApplication app = (CourseableApplication) getApplication();
-  Rating r = new Rating(app.getClientID(), rating);
-  app.getCourseClient().postRating(sum, r, this);
+      final RatingBar ratingBar, final float rating, final boolean fromUser) {
+    CourseableApplication app = (CourseableApplication) getApplication();
+    Rating r = new Rating(app.getClientID(), rating);
+    app.getCourseClient().postRating(sum, r, this);
   }
 }
 

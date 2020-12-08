@@ -8,13 +8,12 @@ public class Rating {
   private String id;
   private double rating;
 
-  /**
-   * Default constructor for Rating.
-   */
+  /** Default constructor for Rating. */
   public Rating() {}
 
   /**
    * Constructor for Rating.
+   *
    * @param setId will set ID.
    * @param setRating will set rating.
    */
@@ -25,6 +24,7 @@ public class Rating {
 
   /**
    * Retrieves Id.
+   *
    * @return id will retrieve ID.
    */
   public String getId() {
@@ -33,6 +33,7 @@ public class Rating {
 
   /**
    * Retrieve rating.
+   *
    * @return rating will retrieve rating.
    */
   public double getRating() {

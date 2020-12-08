@@ -118,6 +118,7 @@ public final class Server extends Dispatcher {
 
   /**
    * Updates rating to server.
+   *
    * @param path
    * @param request
    * @return MockResponse
@@ -157,7 +158,8 @@ public final class Server extends Dispatcher {
   }
 
   /**
-   *  Calls the methods.
+   * Calls the methods.
+   *
    * @param request
    * @return MockResponse the right one
    */
