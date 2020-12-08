@@ -22,7 +22,6 @@ import edu.illinois.cs.cs125.fall2020.mp.models.Course;
 import edu.illinois.cs.cs125.fall2020.mp.models.Rating;
 import edu.illinois.cs.cs125.fall2020.mp.models.Summary;
 import edu.illinois.cs.cs125.fall2020.mp.network.Client;
-import edu.illinois.cs.cs125.fall2020.mp.
 
 /**
  * Create new class Course Activity.
@@ -47,13 +46,13 @@ public class CourseActivity extends AppCompatActivity
     Intent intent = getIntent();
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     String description = intent.getStringExtra("COURSE");
-    binding =  DataBindingUtil.setContentView(this, R.layout.activity_course);
+    binding = DataBindingUtil.setContentView(this, R.layout.activity_course);
     try {
       sum = mapper.readValue(description, Summary.class);
-      Course course = mapper.readValue(description, Course.class);
-      String temp = String.format(
-          "%s %s:  %s\n", sum.getDepartment(), sum.getNumber(), sum.getTitle());
-      binding.title1.setText(temp);
+      Course co = mapper.readValue(description, Course.class);
+      String x = String.format(
+          "%s %s %s\n", sum.getDepartment(), sum.getNumber(), sum.getTitle());
+      binding.title1.setText(x);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
@@ -88,19 +87,17 @@ public class CourseActivity extends AppCompatActivity
   }
 
   /**
-      * This changes the rating as you click on it.
-      *
-      * @param ratingBar is the specified rating bar for the course
-      * @param rating is the rating for the course
-      * @param fromUser is the input from the user
-      */
-  @Override
-  public void onRatingChanged(
-      final RatingBar ratingBar, final float rating, final boolean fromUser) {
+   *  This changes the rating as you click on it.
+   *  @param ratingBar is the specified rating bar for the course
+   *  @param rating is the rating for the course
+   *  @param fromUser is the input from the user
+   */
+  @Override
+  public void onRatingChanged(
+      final RatingBar ratingBar, final float rating , final boolean fromUser) {
   CourseableApplication app = (CourseableApplication) getApplication();
   Rating r = new Rating(app.getClientID(), rating);
   app.getCourseClient().postRating(sum, r, this);
-  }
-}
+  }
 }
 
